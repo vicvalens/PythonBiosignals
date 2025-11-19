@@ -11,18 +11,16 @@ double vImag[SAMPLES];
 ArduinoFFT<double> FFT = ArduinoFFT<double>(vReal, vImag, SAMPLES, SAMPLING_FREQUENCY);
 
 // ================= EEG CHANNELS =================
-// 3 señales: por ejemplo 3 electrodos/sensores en A0, A1, A2
 const uint8_t EEG_PINS[3] = {A0, A1, A2};
 
 // ================= LED STRIP CONFIG =================
-#define LED_PIN   6      // Pin de datos de la tira (DAT)
-#define NUM_LEDS  30     // CAMBIA esto al número de LEDs reales
+#define LED_PIN   6      
+#define NUM_LEDS  30     
 
-// Probado: tu tira funciona bien como NEO_GRB
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 // Estados de la lámpara:
-// 0 = estrés (naranja), 1 = neutro (verde claro), 2 = relajado (violeta)
+// 0 = estrés (naranja), 1 = neutro (verde), 2 = relajado (violeta)
 int ledState = -1;
 
 // Color actual y objetivo (para fade suave)
@@ -69,11 +67,11 @@ void loop() {
   } else if (ri_avg > TH_RELAXED) {
     // Relajado -> VIOLETA
     newState = 2;
-    setTargetColor(220, 0, 100);         // violeta/magenta
+    setTargetColor(220, 0, 100);         // violeta
   } else {
-    // Neutro -> VERDE CLARO
+    // Neutro -> VERDE
     newState = 1;
-    setTargetColor(120, 255, 120);       // verde pastel
+    setTargetColor(120, 255, 120);       // verde
   }
 
   // 4) Mensaje en Serial solo si cambió el estado
@@ -82,7 +80,7 @@ void loop() {
     if (ledState == 0) {
       Serial.println("ESTADO GLOBAL: ESTRES (naranja)");
     } else if (ledState == 1) {
-      Serial.println("ESTADO GLOBAL: NEUTRO (verde claro)");
+      Serial.println("ESTADO GLOBAL: NEUTRO (verde)");
     } else if (ledState == 2) {
       Serial.println("ESTADO GLOBAL: RELAJADO (violeta)");
     }
@@ -95,14 +93,14 @@ void loop() {
   Serial.print("RI_avg:");
   Serial.println(ri_avg, 4);
 
-  // Si quieres depurar por canal:
+  // Depurar por canal:
   /*
   Serial.print(" RI1:"); Serial.print(ri1, 4);
   Serial.print(" RI2:"); Serial.print(ri2, 4);
   Serial.print(" RI3:"); Serial.println(ri3, 4);
   */
 
-  delay(60);   // Ajusta también esto para cambiar velocidad del fade
+  delay(60);
 }
 
 // ================= FUNCIONES EEG =================
